@@ -104,9 +104,11 @@ namespace ShortcutApp {
             }
 
             for (int i = 2; i < outputString.Length; i++){
-               if (shouldQuestionBeAsked[i - 2] == true && i <= shouldQuestionBeAsked.Length){
+               if (i <= shouldQuestionBeAsked.Length){
+                   if (shouldQuestionBeAsked[i - 2] == true){
                    Console.Write(questions[i]);
                    outputString[i] = Console.ReadLine();
+                   }
                } else{
                    outputString[i] = "Blank";
                }
