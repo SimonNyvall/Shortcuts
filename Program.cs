@@ -6,7 +6,7 @@ namespace ShortcutApp {
     class Program {
           
         static void Main(string[] args) {
-              
+
             WriteToLogFile();
             //CreateLogFile();
 
@@ -17,12 +17,15 @@ namespace ShortcutApp {
 
             string[] outputString = LogQuestions();
 
-            string path = @"/home/nyvall/Desktop/Home/Programs/Desptop App Short/LogFolder/Log1.txt";
-            await File.WriteAllLinesAsync(path, outputString);
-
+            //string path = @"/home/nyvall/Desktop/Home/Programs/Desptop App Short/LogFolder/Log1.txt";
+            //await File.WriteAllLinesAsync(path, outputString);
+            
+            System.Console.WriteLine("\n");
+            foreach (var item in outputString){
+                System.Console.WriteLine(item);
+            }
         }
 
-        #region Actions
         static string[] LogQuestions(){
 
              // Example of log file
@@ -42,7 +45,7 @@ namespace ShortcutApp {
                 "Shortcut name: ",
                 "Action: ",
                 "Origigal path: ",
-                "Distent path",
+                "Distent path: ",
                 "Content: ",
                 "Timer: ",
                 "Starting time: ",
@@ -51,6 +54,14 @@ namespace ShortcutApp {
                 "Eding Time: "
             };
 
+            string tempAnwser = "";
+
+
+            // debug
+            //CheckIfQuestionAnswerIsCorrect("h", questions[8], questions);
+
+
+
             bool[] shouldQuestionBeAsked = new bool[3];
 
             string[]? outputString = new string[questions.Length];
@@ -58,8 +69,15 @@ namespace ShortcutApp {
             Console.Write(questions[0]);
             outputString[0] = Console.ReadLine();
 
-            Console.Write(questions[1]);
-            outputString[1] = Console.ReadLine();
+            do{
+                Console.Write(questions[1]);
+                tempAnwser = Console.ReadLine();
+                if (CheckIfQuestionAnswerIsCorrect(tempAnwser,questions[1], questions)){
+                        outputString[1] = tempAnwser;
+                        break;
+                    }
+            } while(true);
+            
 
             // Check which command the user want to run and toggle the correct questions
             switch (outputString[1]){
@@ -109,8 +127,14 @@ namespace ShortcutApp {
             for (int i = 2; i < 5; i++){
                if (i <= shouldQuestionBeAsked.Length){
                    if (shouldQuestionBeAsked[i - 2] == true){
-                   Console.Write(questions[i]);
-                   outputString[i] = Console.ReadLine();
+                    do{
+                        Console.Write(questions[i]);
+                        tempAnwser = Console.ReadLine();
+                        if (CheckIfQuestionAnswerIsCorrect(tempAnwser,questions[i], questions)){
+                            outputString[i] = tempAnwser;
+                            break;
+                        }                                      
+                    } while (true);
                    }
                } else{
                    outputString[i] = "...";
@@ -118,13 +142,26 @@ namespace ShortcutApp {
             }
 
             // Asks for timer setting
-            Console.Write(questions[5]);
-            outputString[5] = Console.ReadLine();
+            do{
+                Console.Write(questions[5]);
+                tempAnwser = Console.ReadLine();
+                if (CheckIfQuestionAnswerIsCorrect(tempAnwser,questions[5], questions)){
+                    outputString[5] = tempAnwser;
+                    break;
+                }
+            } while (true);
+            
 
             if (string.Compare(outputString[5], "yes") == 0 || string.Compare(outputString[5], "y") == 0){
                 for (int i = 6; i < questions.Length; i++){
-                    Console.Write(questions[i]);
-                    outputString[i] = Console.ReadLine();
+                    do{
+                        Console.Write(questions[i]);
+                        tempAnwser = Console.ReadLine();
+                        if (CheckIfQuestionAnswerIsCorrect(tempAnwser,questions[i], questions)){
+                                outputString[i] = tempAnwser;
+                                break;
+                            }
+                    } while (true);
                 }
             } else{
                 for (int i = 6; i < questions.Length; i++){
@@ -135,6 +172,77 @@ namespace ShortcutApp {
             return outputString;
         }
 
+        static bool CheckIfQuestionAnswerIsCorrect(object anwser, string question, string[] questions){
+            // questions    0       1       2       3       4       5     6    7    8     9
+            //              string, string, string, string, string, bool, int, int, char, int
+
+            // True if action command is acceptable
+            if (question == questions[1]){
+                switch (anwser){
+                    case "mkdir":
+                        return true;
+                        
+                    case "fs":
+                        return true;
+                        
+                    case "wr":
+                        return true;
+                        
+                    case "comp":
+                        return true;
+                       
+                    case "mv":
+                        return true;
+                        
+                    case "re":
+                        return true;
+                        
+                    case "op":
+                        return true;
+                        
+                    case "run":
+                        return true;  
+                }
+            }
+
+            // True if dir does not exist
+            if (question == questions[2] || question == questions[3]){
+                if (Directory.Exists(anwser.ToString())){
+                    return true;
+                }
+            }
+
+            // True if the user types yes, y, no , n... Does not matter if it is capital
+            if (question == questions[5]){
+                if (string.Compare(anwser.ToString(), "yes") == 0 || string.Compare(anwser.ToString(), "y") == 0){
+                    return true;
+                }
+            }
+
+            // true if anwser is a number and not a charecter
+            if (question == questions[6] || question == questions[7] || question == questions[9]){
+                char num;
+                for (int i = 0; i < anwser.ToString().Length; i++){
+                    num = anwser.ToString()[i];
+                    if (Char.IsNumber(num)){
+                        return true;
+                    }
+                }
+            }
+           
+            // True if the input is h, m or s
+            if (question == questions[8]){
+                if (anwser.ToString().Length < 2){
+                    if (anwser.ToString() == "h" || anwser.ToString() == "m" || anwser.ToString() == "s"){
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        #region Action
         static void createFolder(string path, string folderName){
             if (!Directory.Exists(path)){
                 Directory.CreateDirectory(path);
@@ -142,10 +250,10 @@ namespace ShortcutApp {
             }
         }
 
-
-        #region Action
         static void createFile(string path, string fileName){
+            if (!File.Exists(path)){
 
+            }
         }
 
         static void writeToFile(string path, string content){
@@ -168,6 +276,6 @@ namespace ShortcutApp {
 
         }
 
-        #endregion Actions
+        #endregion Action
     }
 }
