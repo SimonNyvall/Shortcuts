@@ -136,12 +136,14 @@ namespace ShortcutApp {
         }
 
         static void createFolder(string path, string folderName){
-            if (!Directory.Exists(path){
+            if (!Directory.Exists(path)){
                 Directory.CreateDirectory(path);
                 Console.WriteLine("Folder was created...");
-            })
+            }
         }
 
+
+        #region Action
         static void createFile(string path, string fileName){
 
         }
