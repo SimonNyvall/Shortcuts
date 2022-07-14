@@ -2,10 +2,16 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ShortcutApp
+namespace ShortCreate
 {
-    class Program
+    public class Create
     {
+        public async void CreateAction()
+        {
+            await WriteToLogFile();
+        }
+
+        /*
         static async Task<int> Main(string[] args)
         {
             await WriteToLogFile();
@@ -15,6 +21,7 @@ namespace ShortcutApp
 
             return 0;
         }
+        */
 
         static async Task WriteToLogFile()
         {
@@ -278,51 +285,5 @@ namespace ShortcutApp
 
             return false;
         }
-
-        #region Actions
-
-        static void createFolder(string path, string folderName)
-        {
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-                Console.WriteLine("Folder was created...");
-            }
-        }
-
-        static void createFile(string path, string fileName)
-        {
-            if (!File.Exists(path))
-            {
-
-            }
-        }
-
-        static void writeToFile(string path, string content)
-        {
-
-        }
-
-        static void compressfile(string path)
-        {
-
-        }
-
-        static void moveFile(string currentPath, string disieredPath)
-        {
-
-        }
-
-        static void renameFile(string path, string name)
-        {
-
-        }
-
-        static void runScript(string path)
-        {
-
-        }
-
-        #endregion Actions
     }
 }
